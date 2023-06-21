@@ -1,34 +1,51 @@
-import HelpScout, { NOTIFICATION_TYPES } from "@helpscout/javascript-sdk";
-import { Button, DefaultStyle, Heading } from "@helpscout/ui-kit";
-import { useEffect, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { Octokit } from "@octokit/core";
+import { DefaultStyle } from "@helpscout/ui-kit";
 
-function App() {
-  const [userEmail, setUserEmail] = useState<string | undefined>(
-    "unknown user"
+import HelpScout, { Context } from "@helpscout/javascript-sdk";
+
+import { Main, CreateIssuePopup } from "./screens";
+import { OctokitContext } from "./hooks/useOctokitContext";
+import { HelpScoutContext } from "./hooks/useHelpscoutContext";
+
+import "./App.css";
+
+function App(): JSX.Element {
+  const octokit = useRef<Octokit>(
+    new Octokit({ auth: import.meta.env.VITE_GH_ACCESS_TOKEN })
   );
+  const urlSearchParams = new URLSearchParams(window.location.search);
+  const [helpscoutContext, setHelpscoutContext] = useState({} as Context);
 
-  useEffect(() => {
-    HelpScout.getApplicationContext().then(({ user }) =>
-      setUserEmail(user?.email)
-    );
-  }, []);
+  HelpScout.getApplicationContext().then((context) => {
+    console.log(context)
+  })
+  // useEffect(() => {
+  //   const getContext = async () => {
+  //     const context = await HelpScout.getApplicationContext();
+  //     setHelpscoutContext(context);
+  //   };
 
-  function onClick() {
-    HelpScout.showNotification(
-      NOTIFICATION_TYPES.SUCCESS,
-      "Hello from the sidebar app"
-    );
-  }
+  //   getContext();
+  // }, []);
+
+  // Veeeery naive 'routing' so we can open the app in popup windows
+  const renderScreen = () => {
+    switch (urlSearchParams.get("do")) {
+      case "createIssue":
+        return <CreateIssuePopup />;
+      default:
+        return <Main />;
+    }
+  };
 
   return (
-    <div className="App">
-      <DefaultStyle />
-      <Heading level="h1">Hi, {userEmail}</Heading>
-      <br />
-      <Button size="sm" onClick={onClick}>
-        Click me
-      </Button>
-    </div>
+    <OctokitContext.Provider value={octokit.current}>
+      <HelpScoutContext.Provider value={helpscoutContext}>
+        <DefaultStyle />
+        {renderScreen()}
+      </HelpScoutContext.Provider>
+    </OctokitContext.Provider>
   );
 }
 

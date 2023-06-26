@@ -13,9 +13,13 @@
     "@helpscout/javascript-sdk": "^0.2.3",
     "@helpscout/ui-kit": "^0.6.0",
     "@hsds/checkbox": "^7.1.10",
+    "@hsds/copy-value": "^7.1.13",
     "@hsds/drop-list": "^7.3.2",
+    "@hsds/icon-button": "^7.1.13",
+    "@hsds/icons": "^7.9.1",
     "@hsds/input": "^7.1.10",
     "@hsds/simple-modal": "^7.1.13",
+    "@hsds/utils-mixins": "^7.1.1",
     "octokit": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,8 +29,10 @@
   "devDependencies": {
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^4.0.0",
     "typescript": "^4.6.4",
+    "use-resize-observer": "^9.1.0",
     "vite": "^4.3.0",
     "vite-plugin-mkcert": "^1.15.0"
   }

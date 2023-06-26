@@ -1,30 +1,33 @@
-import { useEffect, useState, useRef } from "react";
-import { Octokit } from "@octokit/core";
+import { Repository, Issue } from "@/types";
+import { IssueListUI, IssuesListEmptyUI } from "./IssueList.css";
 
-import { useOctokitContext } from "../../../../hooks/useOctokitContext";
-import { Repository } from "../../../../types";
+import { IssueListItem } from "./components/IssueListItem";
 
-const IssueList = (): JSX.Element => {
-	const [repos, setRepos] = useState<Repository[]>([]);
-	const octokit = useOctokitContext();
-	const org = import.meta.env.VITE_GH_ORG;
-
-	useEffect(() => {
-		const issues = async () => {
-			return await octokit!.request(`GET /search/issues?q=${encodeURIComponent(`test is:issue user:${org}`)}`);
-		};
-
-		issues().then((response) => {
-			console.log(response);
-		});
-
-		// userRepos().then((response) => {
-		// 	const reposToList: Repository[] = response.data.filter((repo: Repository) => repo.has_issues);
-		// 	setRepos(reposToList);
-		// });
-	}, []);
-
-	return <p>Issues</p>;
+type IssueListProps = {
+  showIssue: Function;
+  issues: Issue[];
 };
 
-export { IssueList }
+const IssueList = ({ showIssue, issues }: IssueListProps): JSX.Element => {
+  return (
+    <>
+      {issues.length ? (
+        <IssueListUI>
+          {issues.map((issue: Issue) => (
+            <IssueListItem
+              issue={issue}
+              key={issue.id}
+              onClickIssue={showIssue}
+            />
+          ))}
+        </IssueListUI>
+      ) : (
+        <IssuesListEmptyUI>
+          No issues logged for this conversation
+        </IssuesListEmptyUI>
+      )}
+    </>
+  );
+};
+
+export { IssueList };
